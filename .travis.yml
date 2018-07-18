@@ -1,9 +1,9 @@
-// System part
+# System part
 os:
   - linux
 sudo: required
 
-// Java specific
+# Java specific
 language: java
 jdk:
   - openjdk8
