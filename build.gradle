@@ -3,6 +3,24 @@ plugins {
     id "net.tribe-seven.swig" version "0.1.1"
 }
 
+
+
+repositories {
+    jcenter()
+    maven { url 'https://oss.jfrog.org/artifactory/oss-snapshot-local' }
+}
+
+
+dependencies {
+    testCompile group: 'org.testng', name: 'testng', version: '6.8.13'
+}
+
+
+test {
+    environment "LD_LIBRARY_PATH": "$buildDir"
+    environment "DYLD_LIBRARY_PATH":  "$buildDir"
+}
+
 task compileSwig(type: SwigTask) {
     description "Generate the JNI wrapping necessary files"
     verbose = true
@@ -40,15 +58,3 @@ task generateLibrary(dependsOn: compileObjects) {
 }
 
 compileJava.dependsOn generateLibrary
-
-
-task testRun(dependsOn: compileJava) {
-    doLast {
-        exec {
-            workingDir "$buildDir/classes/java/main"
-            environment "LD_LIBRARY_PATH": "$buildDir"
-            environment "DYLD_LIBRARY_PATH":  "$buildDir"
-            commandLine "java", "runme"
-        }
-    }
-}
