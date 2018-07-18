@@ -1,0 +1,47 @@
+apply plugin: "java"
+
+task compileSwig() {
+    def input_interface = "swig/example.i"
+    inputs.files input_interface
+
+    doLast {
+        exec {
+            commandLine "swig", "-outdir", "$projectDir/src/main/java", "-java", input_interface
+        }
+    }
+}
+
+task compileObjects(dependsOn: compileSwig) {
+
+    doLast {
+        exec {
+            commandLine "gcc", "-fpic", "-c", "swig/example.c", "-o", "$buildDir/example.o", "-I/usr/lib/jvm/java-8-openjdk/include/", "-I/usr/lib/jvm/java-8-openjdk/include/linux"
+        }
+
+        exec {
+            commandLine "gcc", "-fpic", "-c", "swig/example_wrap.c", "-o", "$buildDir/example_wrap.o", "-I/usr/lib/jvm/java-8-openjdk/include/", "-I/usr/lib/jvm/java-8-openjdk/include/linux"
+        }
+    }
+}
+
+task generateLibrary(dependsOn: compileObjects) {
+    doLast {
+        exec {
+            commandLine "gcc", "-shared", "$buildDir/example.o", "$buildDir/example_wrap.o", "-o", "$buildDir/libexample.so"
+        }
+    }
+}
+
+compileJava.dependsOn generateLibrary
+
+
+task testRun(dependsOn: compileJava) {
+    doLast {
+        exec {
+            workingDir "$buildDir/classes/java/main"
+            environment "LD_LIBRARY_PATH": "$buildDir"
+            environment "DYLD_LIBRARY_PATH":  "$buildDir"
+            commandLine "java", "runme"
+        }
+    }
+}
