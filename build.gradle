@@ -1,18 +1,20 @@
-apply plugin: "java"
+plugins {
+    id "java"
+    id "net.tribe-seven.swig" version "0.1.1"
+}
 
-task compileSwig() {
-    def input_interface = "swig/example.i"
-    inputs.files input_interface
-
-    doLast {
-        exec {
-            commandLine "swig", "-outdir", "$projectDir/src/main/java", "-java", input_interface
-        }
-    }
+task compileSwig(type: SwigTask) {
+    verbose = true
+    javaSourcesPath = new File("$projectDir/src/main/java/example_package")
+    source = new File("$projectDir/swig/example.i")
+    wrapperTargetFile = new File("$projectDir/swig/example_wrap.c")
+    module = "example"
+    packageName = "example_package"
 }
 
 task compileObjects(dependsOn: compileSwig) {
 
+    buildDir.mkdirs()
     doLast {
         exec {
             commandLine "gcc", "-fpic", "-c", "swig/example.c", "-o", "$buildDir/example.o", "-I/usr/lib/jvm/java-8-openjdk/include/", "-I/usr/lib/jvm/java-8-openjdk/include/linux"
@@ -27,7 +29,7 @@ task compileObjects(dependsOn: compileSwig) {
 task generateLibrary(dependsOn: compileObjects) {
     doLast {
         exec {
-            commandLine "gcc", "-shared", "$buildDir/example.o", "$buildDir/example_wrap.o", "-o", "$buildDir/libexample.so"
+            commandLine "gcc", "-shared", "$buildDir/example.o",  "$buildDir/example_wrap.o", "-o", "$buildDir/libexample.so"
         }
     }
 }

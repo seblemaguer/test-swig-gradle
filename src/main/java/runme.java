@@ -1,3 +1,5 @@
+import example_package.example;
+
 public class runme {
 
   static {
