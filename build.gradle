@@ -14,14 +14,16 @@ task compileSwig(type: SwigTask) {
 
 task compileObjects(dependsOn: compileSwig) {
 
+    def JAVA_HOME = System.properties['java.home'] + "/.."
+
     buildDir.mkdirs()
     doLast {
         exec {
-            commandLine "gcc", "-fpic", "-c", "c_src/example.c", "-o", "$buildDir/example.o", "-I/usr/lib/jvm/java-8-openjdk/include/", "-I/usr/lib/jvm/java-8-openjdk/include/linux"
+            commandLine "gcc", "-fpic", "-c", "c_src/example.c", "-o", "$buildDir/example.o", "-I${JAVA_HOME}/include/", "-I${JAVA_HOME}/include/linux"
         }
 
         exec {
-            commandLine "gcc", "-fpic", "-c", "$buildDir/example_wrap.c", "-o", "$buildDir/example_wrap.o", "-I/usr/lib/jvm/java-8-openjdk/include/", "-I/usr/lib/jvm/java-8-openjdk/include/linux"
+            commandLine "gcc", "-fpic", "-c", "$buildDir/example_wrap.c", "-o", "$buildDir/example_wrap.o", "-I${JAVA_HOME}/include/", "-I${JAVA_HOME}/include/linux"
         }
     }
 }
