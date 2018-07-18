@@ -7,7 +7,7 @@ task compileSwig(type: SwigTask) {
     verbose = true
     javaSourcesPath = new File("$projectDir/src/main/java/example_package")
     source = new File("$projectDir/swig/example.i")
-    wrapperTargetFile = new File("$projectDir/swig/example_wrap.c")
+    wrapperTargetFile = new File("$projectDir/build/example_wrap.c")
     module = "example"
     packageName = "example_package"
 }
@@ -17,11 +17,11 @@ task compileObjects(dependsOn: compileSwig) {
     buildDir.mkdirs()
     doLast {
         exec {
-            commandLine "gcc", "-fpic", "-c", "swig/example.c", "-o", "$buildDir/example.o", "-I/usr/lib/jvm/java-8-openjdk/include/", "-I/usr/lib/jvm/java-8-openjdk/include/linux"
+            commandLine "gcc", "-fpic", "-c", "c_src/example.c", "-o", "$buildDir/example.o", "-I/usr/lib/jvm/java-8-openjdk/include/", "-I/usr/lib/jvm/java-8-openjdk/include/linux"
         }
 
         exec {
-            commandLine "gcc", "-fpic", "-c", "swig/example_wrap.c", "-o", "$buildDir/example_wrap.o", "-I/usr/lib/jvm/java-8-openjdk/include/", "-I/usr/lib/jvm/java-8-openjdk/include/linux"
+            commandLine "gcc", "-fpic", "-c", "$buildDir/example_wrap.c", "-o", "$buildDir/example_wrap.o", "-I/usr/lib/jvm/java-8-openjdk/include/", "-I/usr/lib/jvm/java-8-openjdk/include/linux"
         }
     }
 }
