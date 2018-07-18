@@ -4,6 +4,7 @@ plugins {
 }
 
 task compileSwig(type: SwigTask) {
+    description "Generate the JNI wrapping necessary files"
     verbose = true
     javaSourcesPath = new File("$projectDir/src/main/java/example_package")
     source = new File("$projectDir/swig/example.i")
@@ -13,6 +14,7 @@ task compileSwig(type: SwigTask) {
 }
 
 task compileObjects(dependsOn: compileSwig) {
+    description "Compiling the objects"
 
     def JAVA_HOME = System.properties['java.home'] + "/.."
 
@@ -29,6 +31,7 @@ task compileObjects(dependsOn: compileSwig) {
 }
 
 task generateLibrary(dependsOn: compileObjects) {
+    description "Generate the shared library to be used"
     doLast {
         exec {
             commandLine "gcc", "-shared", "$buildDir/example.o",  "$buildDir/example_wrap.o", "-o", "$buildDir/libexample.so"
