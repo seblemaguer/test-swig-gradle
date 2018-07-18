@@ -4,22 +4,27 @@ plugins {
 }
 
 
-
 repositories {
     jcenter()
     maven { url 'https://oss.jfrog.org/artifactory/oss-snapshot-local' }
 }
 
-
 dependencies {
     testCompile group: 'org.testng', name: 'testng', version: '6.8.13'
 }
 
-
-test {
-    environment "LD_LIBRARY_PATH": "$buildDir"
-    environment "DYLD_LIBRARY_PATH":  "$buildDir"
+sourceSets {
+    main {
+        resources {
+            srcDir "$buildDir/lib"
+        }
+    }
 }
+
+// test {
+//     environment "LD_LIBRARY_PATH": "$buildDir"
+//     environment "DYLD_LIBRARY_PATH":  "$buildDir"
+// }
 
 task compileSwig(type: SwigTask) {
     description "Generate the JNI wrapping necessary files"
@@ -50,9 +55,10 @@ task compileObjects(dependsOn: compileSwig) {
 
 task generateLibrary(dependsOn: compileObjects) {
     description "Generate the shared library to be used"
+    (new File("$buildDir/lib")).mkdirs()
     doLast {
         exec {
-            commandLine "gcc", "-shared", "$buildDir/example.o",  "$buildDir/example_wrap.o", "-o", "$buildDir/libexample.so"
+            commandLine "gcc", "-shared", "$buildDir/example.o",  "$buildDir/example_wrap.o", "-o", "$buildDir/lib/libexample.so"
         }
     }
 }

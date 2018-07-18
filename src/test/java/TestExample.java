@@ -1,6 +1,8 @@
 // Testing
 import org.testng.Assert;
 import org.testng.annotations.*;
+import java.io.IOException;
+import cz.adamh.utils.NativeUtils;
 
 // Example interface
 import example_package.example;
@@ -9,12 +11,20 @@ public class TestExample {
 
     static {
         try {
-            System.loadLibrary("example");
-        } catch (UnsatisfiedLinkError e) {
-            System.err.println("Native code library failed to load. See the chapter on Dynamic Linking Problems in the SWIG Java documentation for help.\n" + e);
-            System.exit(1);
+            NativeUtils.loadLibraryFromJar("/libexample.so");
+        } catch (IOException e) {
+            e.printStackTrace(); // This is probably not the best way to handle exception :-)
         }
     }
+
+    // static {
+    //     try {
+    //         System.loadLibrary("example");
+    //     } catch (UnsatisfiedLinkError e) {
+    //         System.err.println("Native code library failed to load. See the chapter on Dynamic Linking Problems in the SWIG Java documentation for help.\n" + e);
+    //         System.exit(1);
+    //     }
+    // }
 
 
     @Test
