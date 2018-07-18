@@ -10,7 +10,7 @@ jdk:
 
 # Installation
 before_install:
-  sudo apt-get install gcc g++
+  sudo apt-get install gcc g++ swig
 
 install: ./gradlew b
 
