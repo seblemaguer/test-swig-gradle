@@ -21,10 +21,11 @@ sourceSets {
     }
 }
 
-// test {
-//     environment "LD_LIBRARY_PATH": "$buildDir"
-//     environment "DYLD_LIBRARY_PATH":  "$buildDir"
-// }
+test {
+    useTestNG()
+    // environment "LD_LIBRARY_PATH": "$buildDir"
+    // environment "DYLD_LIBRARY_PATH":  "$buildDir"
+}
 
 task compileSwig(type: SwigTask) {
     description "Generate the JNI wrapping necessary files"
